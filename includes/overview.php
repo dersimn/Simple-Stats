@@ -83,7 +83,7 @@ function aggregate_old_data(){
 	if( ! $result )
 		return;
 		
-	$earliest = mysql_fetch_row( $result );
+	$earliest = mysqli_fetch_row( $result );
 	preg_match( '/^(\d{4})-(\d{2})/', $earliest[0], $matches );
 	
 	$min_yr = intval( $matches[1] );
@@ -127,7 +127,7 @@ function load_archive( $_filters ) {
 	if( !$result )
 		return array( 'pages' => array(), 'visits' => array() );
 		
-	$data = mysql_fetch_row( $result );
+	$data = mysqli_fetch_row( $result );
 	return unserialize( gzinflate( $data[0] ) );
 }
 
@@ -179,7 +179,7 @@ function parse_data( $_result, $_fields, $_filters ) {
 	
 	$source = array( 'search_terms' => 0, 'referrer' => 0, 'direct' => 0 );
 	
-	while ( $row = @mysql_fetch_assoc( $_result ) ) {
+	while ( $row = @mysqli_fetch_assoc( $_result ) ) {
 		// extract individual page info
 		$resources = explode( "\n", $row['resource'] );
 

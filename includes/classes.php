@@ -38,28 +38,28 @@ class SimpleStats {
 	}
 	
 	function connect() {
-		if( !$this->connection = mysql_connect( SIMPLE_STATS_DB_SERVER, SIMPLE_STATS_DB_USER, SIMPLE_STATS_DB_PASS, true ) ) {
+		if( !$this->connection = mysqli_connect( SIMPLE_STATS_DB_SERVER, SIMPLE_STATS_DB_USER, SIMPLE_STATS_DB_PASS ) ) {
 			$this->log_error();
 			return false;
 		}
 		
-		if( ! mysql_select_db( SIMPLE_STATS_DB, $this->connection ) ) {
+		if( ! mysqli_select_db( $this->connection, SIMPLE_STATS_DB ) ) {
 			$this->log_error();
 			return false;
 		}
 		
-		@mysql_query( 'SET NAMES utf8', $this->connection );
+		@mysqli_query( $this->connection, 'SET NAMES utf8' );
 		return true;
 	}
 	
 	function close(){
-		mysql_close( $this->connection );
+		mysqli_close( $this->connection );
 	}
 	
 	private function load_options(){
 		$options = array();
 		$result = $this->query( "SELECT * FROM `{$this->tables['options']}`" );
-		while( $row = @mysql_fetch_assoc( $result ) ) {
+		while( $row = @mysqli_fetch_assoc( $result ) ) {
 			$options[$row['option']] = unserialize( $row['value'] );
 		}
 		
@@ -154,27 +154,27 @@ class SimpleStats {
 
 	private function log_error( $err = false ){
 		if( $this->debug )
-			error_log( $err ? $err : mysql_error() );
+			error_log( $err ? $err : mysqli_error() );
 	}
 	
 	function query( $query ) {
 		//error_log( $query );
-		$result = mysql_query( $query, $this->connection );
+		$result = mysqli_query( $this->connection, $query );
 
 		if ( $result === false ) {
 			$this->log_error( $query );
-			$this->log_error( mysql_error() );
+			$this->log_error( mysqli_error( $this->connection ) );
 			return false;
 		}
 		
 		if ( preg_match( '/^\s*(insert|delete|update|replace) /i', $query ) )
-			return mysql_affected_rows( $this->connection );
+			return mysqli_affected_rows( $this->connection );
 
 		return $result;
 	}
 	
 	function esc( $str ) {
-		return mysql_real_escape_string( $str, $this->connection );
+		return mysqli_real_escape_string( $this->connection, $str );
 	}
 	
 	static function utf8_encode( $_str ) {

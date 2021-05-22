@@ -32,7 +32,7 @@ $archive_tbl_fields = array(
 function check_table_exists( $_table ) {
 	global $ss;
 	$result = $ss->query( "DESCRIBE `$_table`" );
-	return ( @mysql_num_rows( $result ) > 0 );
+	return ( @mysqli_num_rows( $result ) > 0 );
 }
 
 function check_table_fields_exist( $_table, $_fields ) {
@@ -44,7 +44,7 @@ function check_table_fields_exist( $_table, $_fields ) {
 
 	if ( $result ) {
 		$existing_fields = array();
-		while ( $datum = @mysql_fetch_assoc( $result ) ) {
+		while ( $datum = @mysqli_fetch_assoc( $result ) ) {
 			$existing_fields[ $datum['Field'] ] = $datum;
 		}
 	

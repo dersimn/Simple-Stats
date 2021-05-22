@@ -14,7 +14,7 @@ function render_page() {
 
 	$visits = array();
 	if ( $result = $ss->query( $query ) ) {
-		while ( $assoc = @mysql_fetch_assoc( $result ) ) {
+		while ( $assoc = @mysqli_fetch_assoc( $result ) ) {
 			$visits[] = $assoc;
 		}
 	}
